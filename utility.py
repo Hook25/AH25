@@ -33,7 +33,6 @@ def warn(message):
     print("!" * len(message))
     sys.stdout.flush()
 
-
 def parse_cli_args(argv):
     args = {}
     for arg in argv:
@@ -58,12 +57,6 @@ def load_static_conf():
 
 def log(message):
     print(message)
-
-def clean(files, cli_args):
-    if "clean" in cli_args and cli_args["clean"] == "True":
-        log("Cleaning")
-        for file in files:
-            os.remove(file)
 
 def soft_panic(message):
     choice = input("%s \nRetry? [Y/n] > " % message)

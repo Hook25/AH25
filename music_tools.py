@@ -1,7 +1,9 @@
+import math
 import os
 import random
-import math
-from utility import panic, get_tmp_name
+
+from utility import get_tmp_name, panic
+
 #TODO: make this module parametric
 CONCAT_COMMAND = "ffmpeg -f concat -safe 0 -i %s -c copy -hide_banner -loglevel panic -y %s"
 SET_MUSIC_COMMAND = "ffmpeg -i %s -i %s -c:v copy -map 0:v:0 -map 1:a:0 -hide_banner -loglevel panic -shortest -y %s"

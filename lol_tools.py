@@ -1,10 +1,13 @@
-from utility import panic, soft_panic
-from math import sqrt, pow
 import os
+import sys
+import time
+from math import pow, sqrt
+
 import cv2
 import numpy as np
-import time
-import sys
+
+from utility import panic, soft_panic
+
 RECOGNITION_TRESHOLD=0.9
 SAMPLING = 5 #s
 BLUE_KILL = [130.6, 73.3, 9.3]
@@ -14,6 +17,9 @@ KILL_LOCATION_CONSTRAINT = [
     [[(1769, 246), (1820, 248)], YELLOW_COLOR]
 ]
 kill_images = []
+
+def signal_progress(workdone):
+    print("\rProgress: [{0:50s}] {1:.1f}%".format('#' * int(workdone * 50), workdone*100), end="", flush=True)
 
 #video_path -> cv2.VideoCapture
 def get_video_stream(path):
@@ -46,8 +52,11 @@ def distance_colors(color1, color2):
 #video_path -> [timstamp, ...]
 def get_kills(video_path):
     video_stream = get_video_stream(video_path)
-    skip = SAMPLING * video_stream.get(cv2.CAP_PROP_FPS)
-    frame_number = 0
+    skip = SAMPLING
+    msecond_number = 0
+    fps = video_stream.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
+    frameCount = int(video_stream.get(cv2.CAP_PROP_FRAME_COUNT))
+    duration = frameCount/fps
     kill_frames = []
     while not end_of_video(video_stream):
         frame_ready, frame = video_stream.read()
@@ -55,11 +64,10 @@ def get_kills(video_path):
             if frame_contains_kill(frame):
                 kill_frames.append(int(video_stream.get(cv2.CAP_PROP_POS_MSEC) / 1000))
         else:
-            video_stream.set(cv2.CAP_PROP_POS_FRAMES, pos_frame-1)
             soft_panic("Frame is not yet ready")
-        frame_number += skip
-        video_stream.set(1, frame_number)
-
+        msecond_number += skip
+        signal_progress(msecond_number / duration)
+        video_stream.set(cv2.CAP_PROP_POS_MSEC , msecond_number * 1000)
     video_stream.release()
+    print()
     return kill_frames
-
