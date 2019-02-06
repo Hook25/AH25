@@ -5,6 +5,8 @@ from functools import partial
 #-to id bugged use -t
 #                            start input  end                                                  output
 FFMPEG_NAME = "ffmpeg.exe"
+if os.name == 'posix':
+  FFMPEG_NAME = "ffmpeg"
 FFMPEG_CREATE_CLIP_COMMAND = FFMPEG_NAME + " -ss %s -i %s -t %s -c copy -avoid_negative_ts 1 -hide_banner -loglevel panic -y %s "
 OUTPUT_NAME_PATTERN = "tmp%s.mp4"
 #concat is bugged, freezes
@@ -44,7 +46,7 @@ def cut_wrapper(retry, video, start_end_output):
 def cut_video(input_video, timestamps, retry, tmp_folder):
   cores = cpu_count() 
   pool = Pool(cores)
-  args = [(start, end, get_tmp_name(".mp4", "clip_", tmp_folder) ) for (start, end) in timestamps]
+  args = [(start, end, get_tmp_name(".ts", "clip_", tmp_folder) ) for (start, end) in timestamps]
   partial_cut = partial(cut_wrapper, retry, input_video)
   pool.map(partial_cut, args)
   pool.close()
