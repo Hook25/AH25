@@ -38,7 +38,7 @@ def main():
     log("Found %s clips that are \n%s\n" % (len(clips), str(clips)))
     #log("Found %s clips" % (len(clips)))
     actual_clips_path = create_clips(clips, video_path, tmp_folder_path)
-    name_tmp_without_music = get_tmp_name(".mp4", "intermidiate", tmp_folder_path)
+    name_tmp_without_music = get_tmp_name(cli_args["extension"], "intermidiate", tmp_folder_path)
     glue_clips(actual_clips_path, name_tmp_without_music, tmp_folder_path)
     mounted_with_music_path = put_music(name_tmp_without_music, music_folder_path, clips, tmp_folder_path)
     #bugged -> put_outro(mounted_with_music_path, "input/outro.mp4")

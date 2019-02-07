@@ -91,3 +91,17 @@ def enter_and_setup_fakeroot_env(cli_args):
         warn("clean was not specified, everything will be cleaned")  
     if not os.path.isdir(cli_args["music_folder"]):
         panic("Provided music_folder does not exist under fakeroot enviroment")
+
+def sys_exec(command, retry):
+  done = False
+  cwd = os.getcwd()
+  while not done:
+    res_val = os.system(command)
+    if res_val == 0:
+      return True
+    elif retry:
+      whants_retry = input("Command %s failed, \nDo you want to retry? [Y/n]: " % command)
+      if whants_retry[0] in 'nN':
+        panic("Faled to execute %s from folder %s" % (command, cwd),True)
+    else:
+      panic("Failed to execute %s from folder %s" % (command, cwd),True)

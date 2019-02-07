@@ -1,7 +1,6 @@
 from video_tools import cut_video, glue_clips
 import os
 
-TMP_FILE_NAME_PATTERN = "%s_tmp_file.%s"
 SECONDS_MAX_DURATION = 40
 SECONDS_AFTER_TIMESTAMP = 1
 SECONDS_BEFORE_TIMESTAMP = 20

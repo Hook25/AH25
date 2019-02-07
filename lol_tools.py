@@ -9,7 +9,7 @@ import numpy as np
 from utility import panic, soft_panic
 
 RECOGNITION_TRESHOLD=0.9
-SAMPLING = 5 #s
+SAMPLING = 90 #s
 BLUE_KILL = [130.6, 73.3, 9.3]
 YELLOW_COLOR = [4.6, 201, 251]
 KILL_LOCATION_CONSTRAINT = [
