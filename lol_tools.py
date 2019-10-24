@@ -9,7 +9,7 @@ import numpy as np
 from utility import panic, soft_panic
 
 RECOGNITION_TRESHOLD=0.9
-SAMPLING = 90 #s
+SAMPLING = 5 #s
 BLUE_KILL = [130.6, 73.3, 9.3]
 YELLOW_COLOR = [4.6, 201, 251]
 KILL_LOCATION_CONSTRAINT = [
@@ -31,7 +31,7 @@ def get_video_stream(path):
     return video
 #cv2.VideoCapture -> Bool
 def end_of_video(video_stream):
-    return video_stream.get(cv2.CAP_PROP_POS_FRAMES) == video_stream.get(cv2.CAP_PROP_FRAME_COUNT)
+    return video_stream.get(cv2.CAP_PROP_POS_FRAMES) >= video_stream.get(cv2.CAP_PROP_FRAME_COUNT)
 #frame -> Bool
 def frame_contains_kill(frame):
     for rect, color in KILL_LOCATION_CONSTRAINT:
@@ -58,13 +58,15 @@ def get_kills(video_path):
     frameCount = int(video_stream.get(cv2.CAP_PROP_FRAME_COUNT))
     duration = frameCount/fps
     kill_frames = []
-    while not end_of_video(video_stream):
+    frame_ready = True
+    while (not end_of_video(video_stream)) and frame_ready:
         frame_ready, frame = video_stream.read()
         if frame_ready:
             if frame_contains_kill(frame):
                 kill_frames.append(int(video_stream.get(cv2.CAP_PROP_POS_MSEC) / 1000))
         else:
             soft_panic("Frame is not yet ready")
+
         msecond_number += skip
         signal_progress(msecond_number / duration)
         video_stream.set(cv2.CAP_PROP_POS_MSEC , msecond_number * 1000)
