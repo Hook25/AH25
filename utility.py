@@ -45,9 +45,8 @@ def load_static_conf():
     if not os.path.isfile(CONFIG_FILENAME):
         return {}
     config = {}
-    f = open(CONFIG_FILENAME)
-    lines = f.readlines()
-    f.close()
+    with open(CONFIG_FILENAME) as f:
+      lines = f.readlines()
     for line in lines:
         line = line.lstrip().rstrip()
         if len(line) > 0 and not(line[0] == '#'):
